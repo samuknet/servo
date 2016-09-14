@@ -18,7 +18,7 @@ use std::fmt::{Debug, Error, Formatter};
 use style_traits::cursor::Cursor;
 use url::Url;
 use util::geometry::ScreenPx;
-
+use webrender_traits::{ScrollLocation};
 #[derive(Clone)]
 pub enum MouseWindowEvent {
     Click(MouseButton, TypedPoint2D<f32, DevicePixel>),
@@ -64,7 +64,7 @@ pub enum WindowEvent {
     Touch(TouchEventType, TouchId, TypedPoint2D<f32, DevicePixel>),
     /// Sent when the user scrolls. The first point is the delta and the second point is the
     /// origin.
-    Scroll(TypedPoint2D<f32, DevicePixel>, TypedPoint2D<i32, DevicePixel>, TouchEventType),
+    Scroll(ScrollLocation, TypedPoint2D<i32, DevicePixel>, TouchEventType),
     /// Sent when the user zooms.
     Zoom(f32),
     /// Simulated "pinch zoom" gesture for non-touch platforms (e.g. ctrl-scrollwheel).

@@ -21,6 +21,7 @@ extern crate script_traits;
 extern crate style_traits;
 extern crate url;
 extern crate util;
+extern crate webrender_traits;
 #[cfg(target_os = "linux")] extern crate x11;
 #[cfg(target_os = "windows")] extern crate winapi;
 #[cfg(target_os = "windows")] extern crate user32;

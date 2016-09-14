@@ -33,3 +33,8 @@ servo-egl = "0.2"
 winapi = "0.2"
 user32-sys = "0.2"
 gdi32-sys = "0.2"
+
+[dependencies.webrender_traits]
+git = "https://github.com/servo/webrender"
+default_features = false
+features = ["serde_macros"]
