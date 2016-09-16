@@ -238,7 +238,7 @@ impl LoadOrigin for WorkerGlobalScope {
         None
     }
     fn pipeline_id(&self) -> Option<PipelineId> {
-        Some(self.pipeline())
+        Some(self.pipeline_id())
     }
 }
 
@@ -397,12 +397,14 @@ impl WorkerGlobalScope {
     }
 
     pub fn script_chan(&self) -> Box<ScriptChan + Send> {
-        let dedicated =
-            self.downcast::<DedicatedWorkerGlobalScope>();
+        let dedicated = self.downcast::<DedicatedWorkerGlobalScope>();
+        let service_worker = self.downcast::<ServiceWorkerGlobalScope>();
         if let Some(dedicated) = dedicated {
             return dedicated.script_chan();
+        } else if let Some(service_worker) = service_worker {
+            return service_worker.script_chan();
         } else {
-            panic!("need to implement a sender for SharedWorker/ServiceWorker")
+            panic!("need to implement a sender for SharedWorker")
         }
     }
 
@@ -410,13 +412,13 @@ impl WorkerGlobalScope {
         FileReadingTaskSource(self.script_chan())
     }
 
-    pub fn pipeline(&self) -> PipelineId {
+    pub fn pipeline_id(&self) -> PipelineId {
         let dedicated = self.downcast::<DedicatedWorkerGlobalScope>();
         let service_worker = self.downcast::<ServiceWorkerGlobalScope>();
         if let Some(dedicated) = dedicated {
-            return dedicated.pipeline();
+            return dedicated.pipeline_id();
         } else if let Some(service_worker) = service_worker {
-            return service_worker.pipeline();
+            return service_worker.pipeline_id();
         } else {
             panic!("need to implement a sender for SharedWorker")
         }
