@@ -1634,6 +1634,7 @@ impl<Window: WindowMethods> IOCompositor<Window> {
                         }
                     };
                     let this_cursor = scroll_event.cursor;
+
                     if let Some(combined_event) = last_combined_event {
                         if combined_event.phase != scroll_event.phase {
                             if let ScrollLocation::Delta(delta) = combined_event.scroll_location {
@@ -1642,8 +1643,6 @@ impl<Window: WindowMethods> IOCompositor<Window> {
                                     (combined_event.cursor.to_f32() / self.scene.scale).to_untyped();
                                 webrender_api.scroll(ScrollLocation::Delta(calculated_delta), cursor, combined_event.phase);
                                 last_combined_event = None
-                            } else {
-                                panic!("Should be unreachable because of earlier match.");
                             }
                         }
                     }
@@ -1673,8 +1672,6 @@ impl<Window: WindowMethods> IOCompositor<Window> {
                                 last_combined_event.scroll_location = ScrollLocation::Delta(
                                     (delta * old_event_count + this_delta) /
                                     new_event_count);
-                            } else {
-                                panic!("Should be unreachable because of earlier match.")
                             }
                         }
                         (&mut Some(ref mut last_combined_event), _) => {
@@ -1693,8 +1690,7 @@ impl<Window: WindowMethods> IOCompositor<Window> {
                             let calculated_delta = (TypedPoint2D::from_untyped(&delta) / self.scene.scale).to_untyped();
                             ScrollLocation::Delta(calculated_delta)
                         },
-                        ScrollLocation::Start => ScrollLocation::Start,
-                        ScrollLocation::End => ScrollLocation::End, 
+                        sl @ _ => sl, // Leave ScrollLocation unchanged if it is Start or End location. 
                     };
 
                     let cursor = (combined_event.cursor.to_f32() / self.scene.scale).to_untyped();
